@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>우림팀 업무 대시보드</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #F5F4F8; color: #1a1a1a; min-height: 100vh; }
+
+  header { background: #fff; border-bottom: 1px solid #E8E6F0; padding: 0 2rem; display: flex; align-items: center; height: 60px; gap: 12px; }
+  header .logo { font-size: 18px; font-weight: 700; color: #534AB7; }
+  header .sub { font-size: 13px; color: #888; margin-left: 4px; }
+
+  .tabs { display: flex; gap: 0; background: #fff; border-bottom: 1px solid #E8E6F0; padding: 0 2rem; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 14px; color: #888; cursor: pointer; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; white-space: nowrap; }
+  .tab:hover { color: #534AB7; }
+  .tab.active { color: #534AB7; border-bottom-color: #534AB7; font-weight: 600; }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 1.5rem; }
+  .stat { background: #fff; border-radius: 12px; padding: 1.2rem 1.5rem; border: 1px solid #E8E6F0; }
+  .stat-label { font-size: 12px; color: #999; margin-bottom: 8px; }
+  .stat-value { font-size: 28px; font-weight: 700; }
+
+  .card { background: #fff; border-radius: 14px; padding: 1.5rem; border: 1px solid #E8E6F0; margin-bottom: 16px; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+  .card-title { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+
+  .member-select { display: flex; gap: 8px; flex-wrap: wrap; }
+  .member-btn { padding: 7px 18px; border-radius: 20px; border: 1.5px solid #E8E6F0; background: #fff; cursor: pointer; font-size: 13px; color: #555; font-family: inherit; transition: all 0.15s; }
+  .member-btn:hover { border-color: #AFA9EC; color: #534AB7; }
+  .member-btn.active { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; font-weight: 600; }
+
+  /* 할 일 */
+  .todo-list { list-style: none; }
+  .todo-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid #F0EEF8; }
+  .todo-item:last-child { border-bottom: none; }
+  .todo-check { width: 20px; height: 20px; border-radius: 6px; border: 2px solid #D0CCEE; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #fff; transition: all 0.15s; }
+  .todo-check.done { background: #1D9E75; border-color: #1D9E75; }
+  .todo-check.done::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
+  .todo-text { font-size: 14px; color: #1a1a1a; flex: 1; min-width: 0; }
+  .todo-text.done { text-decoration: line-through; color: #bbb; }
+  .priority { font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 600; white-space: nowrap; }
+  .priority.high { background: #FAECE7; color: #993C1D; }
+  .priority.mid { background: #FAEEDA; color: #854F0B; }
+  .priority.low { background: #EAF3DE; color: #3B6D11; }
+
+  /* 진척도 */
+  .progress-wrap { display: flex; align-items: center; gap: 8px; min-width: 160px; }
+  .progress-bar-bg { flex: 1; height: 8px; background: #F0EEF8; border-radius: 10px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 10px; transition: width 0.4s ease; }
+  .progress-input { width: 48px; padding: 3px 6px; border-radius: 8px; border: 1px solid #E8E6F0; font-size: 12px; text-align: center; font-family: inherit; color: #534AB7; font-weight: 600; }
+  .progress-pct { font-size: 12px; font-weight: 600; min-width: 34px; text-align: right; }
+
+  .del-btn { background: none; border: none; cursor: pointer; color: #ccc; font-size: 15px; padding: 0 4px; transition: color 0.15s; flex-shrink: 0; }
+  .del-btn:hover { color: #E24B4A; }
+
+  .add-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .add-row input, .add-row select { flex: 1; min-width: 120px; padding: 9px 14px; border-radius: 10px; border: 1.5px solid #E8E6F0; font-size: 13px; background: #FAFAFA; color: #1a1a1a; font-family: inherit; outline: none; }
+  .add-row input:focus, .add-row select:focus { border-color: #AFA9EC; background: #fff; }
+  .add-row select { flex: 0 0 90px; }
+  .add-btn { padding: 9px 18px; border-radius: 10px; border: 1.5px solid #AFA9EC; background: #EEEDFE; color: #3C3489; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; white-space: nowrap; transition: background 0.15s; }
+  .add-btn:hover { background: #CECBF6; }
+
+  /* 칸반 */
+  .kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .kanban-col { background: #F5F4F8; border-radius: 12px; padding: 14px; }
+  .kanban-col-title { font-size: 13px; font-weight: 600; color: #666; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .kanban-badge { font-size: 11px; background: #fff; border: 1px solid #E8E6F0; border-radius: 10px; padding: 1px 8px; color: #999; }
+  .task-card { background: #fff; border: 1px solid #E8E6F0; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; position: relative; }
+  .task-card:hover .task-del { opacity: 1; }
+  .task-del { position: absolute; top: 8px; right: 8px; background: none; border: none; cursor: pointer; color: #ddd; font-size: 14px; opacity: 0; transition: all 0.15s; }
+  .task-del:hover { color: #E24B4A; }
+  .task-name { font-size: 13px; color: #1a1a1a; margin-bottom: 8px; font-weight: 500; padding-right: 20px; }
+  .task-meta { display: flex; align-items: center; gap: 8px; }
+  .avatar { width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+  .av-purple { background: #EEEDFE; color: #3C3489; }
+  .av-teal { background: #E1F5EE; color: #085041; }
+  .av-coral { background: #FAECE7; color:
