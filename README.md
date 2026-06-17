@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>우림팀 업무 대시보드</title>
+<title>우리팀 업무 대시보드</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #F5F4F8; color: #1a1a1a; min-height: 100vh; }
@@ -129,7 +129,7 @@
 <body>
 
 <header>
-  <span class="logo">🌿 우림팀</span>
+  <span class="logo">🌿 우리팀</span>
   <span class="sub">업무 관리 대시보드</span>
 </header>
 
